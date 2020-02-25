@@ -8,10 +8,22 @@ var items = {};
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
 exports.create = (text, callback) => {
-  var id = counter.getNextUniqueId();
-  items[id] = text;
-  callback(null, { id, text });
+  var id = fs.readFileSync('datastore/counter.txt', (err, data) => {
+    if (err) {
+      throw err;
+    }
+  });
+ //******* */
+  var nextId = counter.getNextUniqueId((null, 6));
+  console.log(nextId);
+  counter.getNextUniqueId(
+    callback( null,
+      fs.writeFile(`${nextId}.txt`, text, (err) => {
+        if (err) { throw err; }
+      })
+    ));
 };
+
 
 exports.readAll = (callback) => {
   var data = _.map(items, (text, id) => {
